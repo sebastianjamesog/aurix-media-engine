@@ -191,13 +191,6 @@ Open **[http://localhost:2333/dashboard](http://localhost:2333/dashboard)** in y
 * 📔 [System Architecture](research/architecture.md)
 
 ---
-
-## 🏷️ Tags & Keywords
-
-`discord-bot` • `lavalink-alternative` • `audio-streaming-server` • `go` • `golang` • `opus` • `discord-voice` • `music-bot` • `lavalink-v4` • `yt-dlp` • `ffmpeg` • `high-performance` • `microservices`
-
----
-
 ## 📄 License
 
 Distributed under the MIT License. See [`LICENSE`](LICENSE) for details.
