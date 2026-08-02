@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  aurix:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: aurix-media-engine
+    restart: unless-stopped
+    ports:
+      - "2333:2333"
+    environment:
+      - AME_PASSWORD=youshallnotpass
+      - AME_PORT=2333

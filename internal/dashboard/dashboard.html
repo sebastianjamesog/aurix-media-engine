@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurix Media Engine — Real-time Dashboard</title>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: rgba(22, 27, 34, 0.75);
+            --border-color: rgba(48, 54, 61, 0.6);
+            --accent-purple: #8b5cf6;
+            --accent-cyan: #06b6d4;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --success: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .status-badge {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--success);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--success);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #c9d1d9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .players-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-title">
+            <div class="logo-icon">A</div>
+            <h2>Aurix Media Engine</h2>
+        </div>
+        <div class="status-badge">
+            <span class="status-dot"></span> Node Active
+        </div>
+    </header>
+
+    <div class="grid">
+        <div class="card">
+            <div class="card-title">Active Players</div>
+            <div class="card-value" id="val-players">0</div>
+        </div>
+        <div class="card">
+            <div class="card-title">Playing Channels</div>
+            <div class="card-value" id="val-playing">0</div>
+        </div>
+        <div class="card">
+            <div class="card-title">Engine Uptime</div>
+            <div class="card-value" id="val-uptime">0s</div>
+        </div>
+        <div class="card">
+            <div class="card-title">Memory Allocation</div>
+            <div class="card-value" id="val-mem">-- MB</div>
+        </div>
+    </div>
+
+    <div class="players-section">
+        <h3>Active Guild Players</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Guild ID</th>
+                    <th>Status</th>
+                    <th>Volume</th>
+                    <th>Current Track</th>
+                </tr>
+            </thead>
+            <tbody id="players-table">
+                <tr>
+                    <td colspan="4" style="color: var(--text-secondary);">No active voice channels</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        async function fetchStats() {
+            try {
+                const res = await fetch('/v4/stats', {
+                    headers: { 'Authorization': 'youshallnotpass' }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById('val-players').innerText = data.players || 0;
+                    document.getElementById('val-playing').innerText = data.playingPlayers || 0;
+                    
+                    const uptimeSec = Math.floor((data.uptime || 0) / 1000);
+                    document.getElementById('val-uptime').innerText = `${uptimeSec}s`;
+                }
+            } catch (err) {
+                console.error("Dashboard stats fetch error:", err);
+            }
+        }
+
+        setInterval(fetchStats, 3000);
+        fetchStats();
+    </script>
+</body>
+</html>

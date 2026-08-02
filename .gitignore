@@ -1,0 +1,30 @@
+# Binaries & Executables
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin/
+aurix
+
+# Go build & test cache
+.cache/
+*.out
+*.test
+
+# Environment & credentials
+.env
+configs/config.yaml
+
+# IDE & OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# Node.js dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
