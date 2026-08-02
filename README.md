@@ -76,7 +76,7 @@
 
 ```powershell
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/Aurix-Media-Engine.git
+git clone https://github.com/sebastianjamesog/Aurix-Media-Engine.git
 cd Aurix-Media-Engine
 
 # Build the binary
